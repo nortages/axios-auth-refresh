@@ -3,6 +3,7 @@ import { AxiosAuthRefreshOptions, AxiosAuthRefreshCache } from './model';
 
 export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
     skipAuthRefresh?: boolean;
+    skipAuthQueue?: boolean;
 }
 
 export const defaultOptions: AxiosAuthRefreshOptions = {
@@ -97,7 +98,12 @@ export function createRequestQueueInterceptor(
     options: AxiosAuthRefreshOptions
 ): number {
     if (typeof cache.requestQueueInterceptorId === 'undefined') {
+        // @ts-ignore
         cache.requestQueueInterceptorId = instance.interceptors.request.use((request: CustomAxiosRequestConfig) => {
+            if (request.skipAuthQueue) {
+                return request;
+            }
+
             return cache.refreshCall
                 .catch(() => {
                     throw new axios.Cancel('Request call failed');

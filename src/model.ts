@@ -29,4 +29,5 @@ export interface AxiosAuthRefreshCache {
 
 export interface AxiosAuthRefreshRequestConfig extends AxiosRequestConfig {
     skipAuthRefresh?: boolean;
+    skipAuthQueue?: boolean;
 }
